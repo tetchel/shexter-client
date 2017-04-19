@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# add and commit the todo list
+
+echo
+if [ -e .commit ]
+then
+    rm .commit
+    git add shexter_client.zip
+    git commit --amend -C HEAD --no-verify
+fi
+exit

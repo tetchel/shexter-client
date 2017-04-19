@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# creates a todo list via TODO comments
+#grep -rnE --exclude=todo.txt '[#/] ?TODO' | sed 's/  //g' | sed 's/$/&\n/' > todo.txt
+
+# Dupe the LICENSE and readme into the folder to be archived
+cp -f LICENSE readme.md shexter_client
+git add shexter_client/LICENSE
+git add shexter_client/readme.md
+
+# bundle the client into an archive for easy download
+ git archive -o shexter_client.zip HEAD:shexter_client
+
+touch .commit
+exit

@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# installs hooks to your local repo
+rm -f ../.git/hooks/post-commit ../.git/hooks/pre-commit
+
+ln -s ../../hooks/pre-commit ../../hooks/post-commit ../.git/hooks
+chmod +x post-commit pre-commit
