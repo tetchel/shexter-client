@@ -22,7 +22,7 @@ Your phone and computer must be on the same LAN for the app to work. You can che
 By default, the client will try and find your phone automatically by scanning your local network. 
 If this fails, you can also configure the location of your phone manually using the IP address and Port presented in the app.
 However, this will need to be updated every time you change WiFi networks, or reset your router. 
-Your phone's network location is stored in a configuration file (eg. `C:\Users\You\AppData\Local\shexter\shexter.ini` or `/home/you/.config/shexter/shexter.ini`, which you are free to edit manually, or use `shexter config` which will also display the config file location.
+Your phone's network location is stored in a configuration file (eg. `C:\Users\You\AppData\Local\shexter\shexter.ini` or `/home/you/.config/shexter/shexter.ini`) which you are free to edit manually or use `shexter config` which will also display the config file location.
 
 Note that, for now, Shexter ignores MMS messages altogether. Bear in mind that some normal-looking messages (such as group messages) are MMS.
 
