@@ -8,8 +8,11 @@ cp -f LICENSE readme.md shexter_client
 git add shexter_client/LICENSE
 git add shexter_client/readme.md
 
+if [ -f shexter_client.zip ];then 
+    rm shexter_client.zip
+fi
 # bundle the client into an archive for easy download
- git archive -o shexter_client.zip HEAD:shexter_client
+git archive -o shexter_client.zip HEAD:shexter_client
 
 touch .commit
 exit

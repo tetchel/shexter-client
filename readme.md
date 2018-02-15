@@ -5,9 +5,41 @@ Sets up in seconds, and provides you with sending, reading and checking for unre
 
 [Get command-line client here](https://github.com/tetchel/shexter-client/raw/master/shexter_client.zip)
 
-[Get apk here.](https://github.com/tetchel/tetchel.github.io/raw/master/app-release.apk) Source is private for now.
+[Get the app here.](https://github.com/tetchel/shexter-client/raw/master/shexter.apk)
 
-Or, download everything: `git clone https://github.com/tetchel/shexter.git`
+**App source [is available here](https://github.com/tetchel/shexter)**
+
+## Linux Install
+Download the client, eg with curl:
+```
+[ /tim/programs/shexter-test ] $ curl -o shexter_client.zip -L https://github.com/tetchel/shexter-client/raw/master/shexter_client.zip
+[ /tim/programs/shexter-test ] $ unzip shexter_client.zip 
+[ /tim/programs/shexter-test ] $ cd installers/nix/
+[ /shexter-test/installers/nix ] $ sudo ./install_linux.sh 
+[sudo] password for tim: 
+shexter.py copied successfully
+/usr/bin/shexter link created successfully
+shexter module copied successfully
+Success!
+```
+Shexter is now installed into /opt/shexter, and linked from /usr/bin, so you can use it from anywhere.
+
+## Windows Install
+Assumes you already downloaded the client.
+```
+PS E:\Tim\Downloads> Expand-Archive shexter_client.zip -DestinationPath shexter_client
+PS E:\Tim\Downloads> cd .\shexter_client\installers\win
+PS E:\Tim\Downloads\shexter_client\installers\win> python .\install_windows.py
+Installing into C:\Users\TIM\AppData\Local\shexter
+WARNING: This script does edit your registry, so run only if you trust me or understand what this script does!
+Confirm install shexter into C:\Users\TIM\AppData\Local\shexter? y/N:
+y
+Copying client script successful.
+Copying .bat successful.
+Adding Shexter to User PATH.
+Successfully added shexter to PATH.
+Install successful. You should now be able to run shexter from anywhere after restarting your terminal.
+```
 
 ## Demo
 ```
@@ -44,8 +76,8 @@ Phone info: SAMSUNG SM-G930W8 Android v7.0
 Is this your phone? y/N: y
 
 Dave has 2 numbers: 
-1: Mobile: (226) 378-8862
-2: Work: 1 231-231-234
+1: Mobile: 123-123-1234
+2: Work: 1 231-231-2342
 Select a number from the above, 1 to 2: 1
 --- September 02 ---
 [15:53] You:   Hey how's it going
@@ -55,27 +87,29 @@ Select a number from the above, 1 to 2: 1
 [17:43] Dave: Hey here's a test message
 --- Yesterday ---
 [15:53] You:  Hey here's another test message
-[16:00] Dave: Hey here's another test message
+[15:53] Dave: Hey here's another test message
 
 [ /shexter_client/installers/nix ] $ shexter send dave
 Enter message (Press Enter twice to send, CTRL + C to cancel): 
 Hey Dave buddy how's it going
 
-Successfully sent 1 message to Dave, Mobile: (226) 378-8862.
+Successfully sent 1 message to Dave, Mobile: 123-123-1234.
 [ /shexter_client/installers/nix ] $ shexter unread
 Unread Messages:
-[00:31] Dave: Hey Dave buddy how's it going
+[12:55] Dave: Hey Dave buddy how's it going
 
 [ /shexter_client/installers/nix ] $ shexter read dave -c 5
 --- Saturday ---
 [17:43] Dave: Hey here's a test message
 --- Yesterday ---
 [15:53] You:   Hey here's another test message
-[16:00] Dave:  Hey here's another test message
+[15:53] Dave:  Hey here's another test message
 --- Today ---
-[00:31] You:  Hey Dave buddy how's it going
-[00:31] Dave: Hey Dave buddy how's it going
+[12:55] You:  Hey Dave buddy how's it going
+[12:55] Dave: Hey Dave buddy how's it going
 ```
+
+The conversation is mirrored because this is just me sending myself test messages :)
 
 ## Client Setup
 
@@ -85,10 +119,10 @@ To install, extract the client archive, navigate to the installer for your platf
 If the install is successful, after restarting your terminal, you should be able to run 'shexter' from anywhere, and consult the help `shexter help` to learn how to `shexter send` and `shexter read`.
 
 ### Contacting your Phone
-Your phone and computer must be on the same LAN for the app to work. You can check if it is working with `shexter send -n $YourPhoneNumber`.
+Your phone and computer must be on the same LAN for the app to work.
 
-By default, the client will try and find your phone automatically by scanning your local network. 
-If this fails, you can also configure the location of your phone manually using the IP address and Port presented in the app.
+By default, the client will try and find your phone automatically by scanning your local network. Make sure the app is open and visible (ie, your screen is on) when the client is searching for your phone (which it will do the first time you run the client, and each time you switch networks).
+If this fails, you can also configure the location of your phone manually using the IP address and Port presented in the app with `shexter config`. This also only takes a few seconds - the port will almost always be `23457`.
 However, this will need to be updated every time you change WiFi networks, or reset your router. 
 Your phone's network location is stored in a configuration file (eg. `C:\Users\You\AppData\Local\shexter\shexter.ini` or `/home/you/.config/shexter/shexter.ini`) which you are free to edit manually or use `shexter config` which will also display the config file location.
 
