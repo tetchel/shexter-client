@@ -9,37 +9,35 @@ Sets up in seconds, and provides you with sending, reading and checking for unre
 
 **App source [is available here](https://github.com/tetchel/shexter)**
 
-## Linux Install
-Download the client, eg with curl:
-```
-[ /tim/programs/shexter-test ] $ curl -o shexter_client.zip -L https://github.com/tetchel/shexter-client/raw/master/shexter_client.zip
-[ /tim/programs/shexter-test ] $ unzip shexter_client.zip 
-[ /tim/programs/shexter-test ] $ cd installers/nix/
-[ /shexter-test/installers/nix ] $ sudo ./install_linux.sh 
-[sudo] password for tim: 
-shexter.py copied successfully
-/usr/bin/shexter link created successfully
-shexter module copied successfully
-Success!
-```
-Shexter is now installed into /opt/shexter, and linked from /usr/bin, so you can use it from anywhere.
+## Client Setup
 
-## Windows Install
-Assumes you already downloaded the client.
-```
-PS E:\Tim\Downloads> Expand-Archive shexter_client.zip -DestinationPath shexter_client
-PS E:\Tim\Downloads> cd .\shexter_client\installers\win
-PS E:\Tim\Downloads\shexter_client\installers\win> python .\install_windows.py
-Installing into C:\Users\TIM\AppData\Local\shexter
-WARNING: This script does edit your registry, so run only if you trust me or understand what this script does!
-Confirm install shexter into C:\Users\TIM\AppData\Local\shexter? y/N:
-y
-Copying client script successful.
-Copying .bat successful.
-Adding Shexter to User PATH.
-Successfully added shexter to PATH.
-Install successful. You should now be able to run shexter from anywhere after restarting your terminal.
-```
+**Dependencies:** Python 3. On Linux, you must also have either 'ifconfig' or 'ip' installed (most systems will have these installed by default).
+
+To install, extract the client archive, navigate to the installer for your platform, and run the installer:
+
+**Windows**:   `   python .\installer_windows.py` 
+
+**Mac/Linux**: ` sudo ./install_linux.sh`
+
+If the install is successful, after restarting your terminal, you should be able to run 'shexter' from anywhere, and consult the `shexter help` to learn how to `shexter send` and `shexter read`.
+
+### Contacting your Phone
+Your phone and computer must be on the same LAN for the app to work.
+
+By default, the client will try and find your phone automatically by scanning your local network. Make sure the app is open and visible (ie, your screen is on) when the client is searching for your phone.
+
+If this fails, you can also configure the location of your phone manually using the IP address and Port presented in the app by running `shexter config`.
+However, this will need to be updated every time you change WiFi networks, or reset your router. 
+
+Note that, for now, Shexter ignores MMS messages altogether. Bear in mind that some normal-looking messages (such as group messages) are MMS.
+
+## App Setup
+
+You must [enable installation from unknown sources](http://www.androidcentral.com/allow-app-installs-unknown-sources) in order to be able to install the apk.
+
+Requires Contacts and SMS permissions. The app will refuse to operate without these permissions.
+
+You may want to check your Security settings for your SMS message limit setting, which can prevent Shexter from sending frequent messages.
 
 ## Demo
 ```
@@ -111,42 +109,4 @@ Unread Messages:
 
 The conversation is mirrored because this is just me sending myself test messages :)
 
-## Client Setup
 
-**Dependencies:** Python 3. On Linux, you must also have either 'ifconfig' or 'ip' installed (most systems will have these installed by default).
-
-To install, extract the client archive, navigate to the installer for your platform, and run the installer (using `python .\installer_windows.py` or `sudo ./install_linux.sh`) through the command line. 
-If the install is successful, after restarting your terminal, you should be able to run 'shexter' from anywhere, and consult the help `shexter help` to learn how to `shexter send` and `shexter read`.
-
-### Contacting your Phone
-Your phone and computer must be on the same LAN for the app to work.
-
-By default, the client will try and find your phone automatically by scanning your local network. Make sure the app is open and visible (ie, your screen is on) when the client is searching for your phone (which it will do the first time you run the client, and each time you switch networks).
-If this fails, you can also configure the location of your phone manually using the IP address and Port presented in the app with `shexter config`. This also only takes a few seconds - the port will almost always be `23457`.
-However, this will need to be updated every time you change WiFi networks, or reset your router. 
-Your phone's network location is stored in a configuration file (eg. `C:\Users\You\AppData\Local\shexter\shexter.ini` or `/home/you/.config/shexter/shexter.ini`) which you are free to edit manually or use `shexter config` which will also display the config file location.
-
-Note that, for now, Shexter ignores MMS messages altogether. Bear in mind that some normal-looking messages (such as group messages) are MMS.
-
-### Fonts (Linux, Optional)
-
-You are probably going to want Unicode font support in your terminal so your Unicode characters do not show as blocks.
-
-[Arch Wiki page on Font Config](https://wiki.archlinux.org/index.php/font_configuration)
-
-As an example:
-
-For `rxvt-unicode`, a popular terminal emulator, you can set the following line in your `.Xresources` :
-`URxvt*font: -xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso10646-1, xft:WenQuanYi Micro Hei Mono,style=Regular, xft:Symbola`
-
-The first font is a bitmap font in XLFD format. The other two are Xft format. The order depicts the glyph priority if there is overlap.
-
-So this setting would show Terminus for ASCII, WenQuanYi Micro Hei Mono for Chinese, and Symbola for remaining Unicode characters such as emoji.
-
-## App Setup
-
-You must [enable installation from unknown sources](http://www.androidcentral.com/allow-app-installs-unknown-sources) in order to be able to install the apk.
-
-Requires Contacts and SMS permissions. The app will refuse to operate without these permissions.
-
-You may want to check your Security settings for your SMS message limit setting, which can prevent Shexter from sending frequent messages.
