@@ -117,7 +117,10 @@ def configure(force_new_config=False):
         print('Error parsing ' + config_file_path + '. Making a new one.')
 
     if not connectinfo or force_new_config:
-        connectinfo = find_phones()
+        try:
+            connectinfo = find_phones()
+        except (KeyboardInterrupt, EOFError):
+            print('\nPhone finder cancelled')
 
         if not connectinfo:
             manual = input('Couldn\'t find your phone - configure manually? Y/n: ')
