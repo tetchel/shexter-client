@@ -144,9 +144,13 @@ def configure(force_new_config=False):
                 first = True
                 while first or not passed:
                     first = False
-                    port = input('Enter the Port in the app, eg "23457": ')
-                    port = port_str_to_int(port)
-                    passed = port is not None
+                    port_str = input('Enter the Port in the app, which should be "23457": ')
+                    try:
+                        port = port_str_to_int(port_str)
+                        passed = port is not None
+                    except KeyboardInterrupt:
+                        print(APP_NAME + ' cannot run without a valid port number.')
+                        quit()
 
                 connectinfo = (ip_addr, port)
 
