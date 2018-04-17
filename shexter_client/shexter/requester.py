@@ -155,6 +155,9 @@ def unread_command(connectinfo):
     #    return ''
 
 
+def _is_contact_needed(command):
+    return command == COMMAND_SEND or command == COMMAND_READ or command == COMMAND_SETPREF_LIST
+
 
 def request(connectinfo, args):
     """
@@ -183,7 +186,7 @@ def request(connectinfo, args):
         command = COMMAND_SETPREF_LIST
 
     # Get the contact name if required, from the args or from the user if not provided.
-    if args.number is None and (command == COMMAND_SEND or command == COMMAND_READ or command == COMMAND_SETPREF_LIST):
+    if args.number is None and _is_contact_needed(command):
         contact_name = _get_contact_name(args, True)
         if contact_name is None:
             return None

@@ -86,7 +86,10 @@ def find_phones():
         return None
 
     print('Ready to search for phones.')
-    input('Press Enter when the app is open on your phone.\n')
+    manual = input('Press Enter when the app is open on your phone, or type "m" to skip to manual configuration.\n')
+    manual = manual.lower()
+    if manual.lower() == 'm':
+        return None
 
     for port in range(PORT_MIN, PORT_MAX+1):
         count = 0
@@ -237,6 +240,7 @@ def _receive_all(sock):
 
 
 # Helper for sending requests to the server
+# Returns none if couldn't contact the server
 def contact_server(connectinfo, to_send):
     # print('sending:\n' + to_send)
     # print("...")
@@ -246,6 +250,8 @@ def contact_server(connectinfo, to_send):
         return None
     sock.send(bytes(to_send, ENCODING))
     response = _receive_all(sock)
+    if not response:
+        print('Received None response!')
     sock.close()
 
     return response
