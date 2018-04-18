@@ -112,7 +112,7 @@ def init_notifier_nix():
 
 
 def notify_nix(title: str, msg: str):
-    print('notify_nix {} {}'.format(title, msg))
+    # print('notify_nix {} {}'.format(title, msg))
     result = subprocess.getstatusoutput('notify-send "{}" "{}"'.format(title, msg))
     if result[0] != 0:
         print('Error running notify-send:')

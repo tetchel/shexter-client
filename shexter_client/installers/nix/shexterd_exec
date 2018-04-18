@@ -1,0 +1,4 @@
+# !/usr/bin/env bash
+# quick executable that is symlinked to /usr/bin/shexterd to run shexter from anywhere
+
+python3 /opt/shexter/shexterd.py "$@"

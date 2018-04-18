@@ -7,12 +7,16 @@ if [ -f /usr/bin/shexter ]; then
     echo "Removing existing symlink at /usr/bin/shexter"
     rm /usr/bin/shexter
 fi
+if [ -f /usr/bin/shexterd ]; then
+    echo "Removing existing symlink at /usr/bin/shexterd"
+    rm /usr/bin/shexterd
+fi
 
 OPT_DIR='/opt/shexter/'
 
 mkdir -p $OPT_DIR &&
-        cp ../../shexter.py $OPT_DIR &&
-        cp ./shexter_exec $OPT_DIR &&
+        cp ../../shexter*.py $OPT_DIR &&
+        cp ./shexter*_exec $OPT_DIR &&
         cp -r ../../shexter $OPT_DIR
 
 if [ $? -ne 0 ]; then
@@ -21,6 +25,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ln -s $OPT_DIR"shexter_exec" /usr/bin/shexter
+ln -s $OPT_DIR"shexterd_exec" /usr/bin/shexterd
 
 NOW=`date +"%Y%m%d%H%M%S"`
 FDATE1=`date -r $OPT_DIR"shexter.py" +"%Y%m%d%H%M%S"`
