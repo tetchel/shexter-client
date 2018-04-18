@@ -17,21 +17,27 @@ This file is meant to be run directly; not to be imported by any other file.
 
 
 def notify(msg: str, title=shexter.config.APP_NAME):
-    # Note swap of msg, title order
     print(title + ': ' + msg)
-    notify_function(title, msg)
+
+    if notifier:
+        # Note swap of msg, title order
+        notify_function(title, msg)
 
 
 def _parse_contact_name(line: str):
     # print('parsing contact name from "{}"'.format(line))
     # The contact name is the first word after the first ']'
-    return line.split(']')[1].strip().split()[0].rstrip(':')
+    try:
+        return line.split(']')[1].strip().split()[0].rstrip(':')
+    except Error as e:
+        print(e)
+        print('Error parsing contact name from "{}"'.format(line))
 
 
 def notify_unread(unread: str) -> None:
 
     unread_lines = unread.splitlines()
-    # Remove the first line, which is just "Unread Lines"
+    # Remove the first line, which is just "Unread Messages:"
     unread_lines = unread_lines[1:]
     if len(unread_lines) > 1:
         notify_title = str(len(unread_lines)) + ' New Messages'
@@ -47,6 +53,11 @@ def notify_unread(unread: str) -> None:
 
         # Remove last ', '
         notify_msg = notify_msg[:-2]
+    elif len(unread_lines) == 0:
+        # At this time, if the unread response was originally exactly one line,
+        # it was because the phone rejected the request.
+        notify_title = 'Approval Required'
+        notify_msg = 'Approve this computer on your phone'
     else:
         contact_name = _parse_contact_name(unread_lines[0]  )
         notify_title = 'New Message'
@@ -66,7 +77,6 @@ def init_notifier_win():
         print(e)
         print('***** To use the ' + shexter.config.APP_NAME + ' daemon on Windows you must install win10toast'
                                                         ' with "[pip | pip3] install win10toast"')
-        quit()
 
 
 def notify_win(title: str, msg: str) -> None:
@@ -87,13 +97,26 @@ def build_notifier_macos():
 """
 
 
+import subprocess
+NOTIFY_SEND = 'notify-send'
+
+
 def init_notifier_nix():
-    return 'poop'
+    try:
+        subprocess.check_call([NOTIFY_SEND, shexter.config.APP_NAME, 'Notifications enabled'])
+        return True
+    except Error as e:
+        print(e)
+        print('***** To use the ' + shexter.config.APP_NAME + ' daemon on Linux you must install notify-send, eg "sudo apt-get install notify-send"')
+
 
 
 def notify_nix(title: str, msg: str):
-    print('linux notify func')
-    pass
+    print('notify_nix {} {}'.format(title, msg))
+    result = subprocess.getstatusoutput('notify-send "{}" "{}"'.format(title, msg))
+    if result[0] != 0:
+        print('Error running notify-send:')
+        print(result[1])
 
 
 def init_notifier():
