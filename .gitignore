@@ -7,3 +7,4 @@
 *.pyc
 
 *hexter*.log
+*hexter*.err
