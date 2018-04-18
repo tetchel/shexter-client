@@ -71,7 +71,7 @@ def init_notifier_win():
     try:
         import win10toast
         toaster = win10toast.ToastNotifier()
-        toaster.show_toast(shexter.config.APP_NAME, 'Notifications enabled', duration=1, threaded=True)
+        toaster.show_toast(shexter.config.APP_NAME, 'Notifications enabled', duration=3, threaded=True)
         return toaster
     except ImportError as e:
         print(e)
@@ -79,9 +79,12 @@ def init_notifier_win():
                                                         ' with "[pip | pip3] install win10toast"')
 
 
+NOTIFY_LEN_S = 10
+
+
 def notify_win(title: str, msg: str) -> None:
     # Notifier is a win10toast.ToastNotifier
-    notifier.show_toast(title, msg, duration=5, threaded=True)
+    notifier.show_toast(title, msg, duration=NOTIFY_LEN_S, threaded=True)
 
 
 """
@@ -103,9 +106,11 @@ NOTIFY_SEND = 'notify-send'
 
 def init_notifier_nix():
     try:
-        subprocess.check_call([NOTIFY_SEND, shexter.config.APP_NAME, 'Notifications enabled'])
+        subprocess.check_call([NOTIFY_SEND, shexter.config.APP_NAME, 'Notifications enabled', 
+                                '-t', '3000'])
+
         return True
-    except Error as e:
+    except Exception as e:
         print(e)
         print('***** To use the ' + shexter.config.APP_NAME + ' daemon on Linux you must install notify-send, eg "sudo apt-get install notify-send"')
 
@@ -113,7 +118,9 @@ def init_notifier_nix():
 
 def notify_nix(title: str, msg: str):
     # print('notify_nix {} {}'.format(title, msg))
-    result = subprocess.getstatusoutput('notify-send "{}" "{}"'.format(title, msg))
+    result = subprocess.getstatusoutput('notify-send "{}" "{}" -t {}'
+                                            .format(title, msg, NOTIFY_LEN_S * 1000))
+
     if result[0] != 0:
         print('Error running notify-send:')
         print(result[1])
