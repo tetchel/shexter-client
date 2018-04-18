@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 #short script to 'install' shexter
 #copies shexter.py to /opt/, then symlinks the shexter executable to /usr/bin.

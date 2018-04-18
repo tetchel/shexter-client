@@ -24,7 +24,9 @@ install_dir = os.path.join(install_dir, APP_NAME)
 print("Installing into " + install_dir)
 
 BAT_NAME = APP_NAME + '.bat'
+DAEMON_BAT_NAME = APP_NAME + 'd.bat'
 CLIENT_NAME = APP_NAME + '.py'
+DAEMON_NAME = APP_NAME + 'd.py'
 # PERSIST_NAME = APP_NAME() + '_persistant.py'
 # DEPENDENCIES = [ 'appdirs.py' ]		# Add new dependencies to the list and the lib directory
 
@@ -68,9 +70,11 @@ for file in os.listdir(install_dir):
 
 # copy the files
 shutil.copy(CLIENT_DIR + CLIENT_NAME, install_dir)
+shutil.copy(CLIENT_DIR + DAEMON_NAME, install_dir)
 # shutil.copy(FILES_DIR + PERSIST_NAME, install_dir)
 # use path[0] because .bat is in the same folder as this script
 shutil.copy(os.path.join(sys.path[0], BAT_NAME), install_dir)
+shutil.copy(os.path.join(sys.path[0], DAEMON_BAT_NAME), install_dir)
 # copy the 'shexter' python module (folder)
 shutil.copytree(os.path.join(CLIENT_DIR, APP_NAME), os.path.join(install_dir, APP_NAME))
 # for dep in DEPENDENCIES:
@@ -80,6 +84,7 @@ shutil.copytree(os.path.join(CLIENT_DIR, APP_NAME), os.path.join(install_dir, AP
 
 client_fullpath = install_dir + '\\' + CLIENT_NAME
 bat_fullpath = install_dir + '\\' + BAT_NAME
+# daemon_bat_fullpath = install_dir + '\\' + DAEMON_BAT_NAME
 # persist_fullpath = install_dir + '\\' + PERSIST_NAME
 
 if os.path.isfile(client_fullpath):
@@ -111,13 +116,13 @@ try:
     SUBKEY = 'PATH'
     currpath = winreg.QueryValueEx(pathkey, SUBKEY)[0]
     if install_dir not in currpath:
-        winreg.SetValueEx(pathkey, SUBKEY, 0, winreg.REG_SZ, currpath + ';' + install_dir)
+        winreg.SetValueEx(pathkey, SUBKEY, 0, winreg.REG_SZ, currpath + ';' + install_dir)        
+        print('***** Successfully added ' + install_dir +
+              ' to PATH - You will need to log in and log back out for this change to be applied.')
 
     winreg.CloseKey(pathkey)
-    print('Successfully added ' + APP_NAME + ' to PATH.')
 except FileNotFoundError:
     # create the key (will this ever happen?)
     print('user PATH not found, should create it.')
 
-print('Install successful. You should now be able to run shexter from anywhere ' +
-      'after restarting your terminal.')
+print('Install successful.')

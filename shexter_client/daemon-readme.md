@@ -4,8 +4,7 @@ The Shexter daemon notifies you whenever you get a new text message!
 
 ## How to run the daemon persistantly on LINUX using BASH:
 ```
-# Make sure you are in the shexter_client directory
-./shexterd.py & >/dev/null 2>&1         # NOTE: Logging is still done to shexterd.log even if you redirect output.
+shexterd & >/dev/null 2>&1         # NOTE: Logging is still done to shexterd.log even if you redirect output.
 
 # Disown the job so you can close the terminal without killing the daemon.
 disown -a         
@@ -37,8 +36,7 @@ sudo systemctl --user enable shexterd.service
 ## How to run the daemon persistantly on WINDOWS using Powershell:
 
 ```
-# Make sure you are in the shexter_client directory
-PS E:\...\shexter_client> Start-Process python -ArgumentList 'shexterd.py' -WindowStyle hidden
+PS C:\Users\you\AppData\Local\shexter\> Start-Process shexterd -WindowStyle hidden
 
 # How to kill it: 
 
