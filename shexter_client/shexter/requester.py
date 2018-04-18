@@ -145,9 +145,9 @@ def _handle_setpref_response(connectinfo, response):
     return contact_server(connectinfo, to_send)
 
 
-def unread_command(connectinfo):
+def unread_command(connectinfo, silent=False):
     to_send = COMMAND_UNRE + '\n' + get_tty_width() + '\n\n'
-    response = contact_server(connectinfo, to_send)
+    response = contact_server(connectinfo, to_send, silent)
     # Must match the phone's 'no unread' response
     # if response != 'No unread messages.':
     return response

@@ -160,7 +160,7 @@ def find_phones():
     return None
 
 
-def _connect_tcp(connectinfo):
+def _connect_tcp(connectinfo, silent=False):
     """
     Connect to the phone using the given IP, port pairing
     :return: The created TCP socket.
@@ -176,12 +176,14 @@ def _connect_tcp(connectinfo):
                        'Also ensure your phone and computer are connected to the same network.')
         errorcode = e.errno
         if errorcode == errno.ECONNREFUSED:
-            print('Connection refused: Likely Shexter is not running on your phone.'
-                  + restart_msg)
+            if not silent:
+                print('Connection refused: Likely Shexter is not running on your phone.'
+                      + restart_msg)
             return None
         elif errorcode == errno.ETIMEDOUT or 'time' in str(e):
-            print('Connection timeout: Likely your phone is not on the same network as your '
-                  'computer or the connection info ' + str(connectinfo) + ' is not correct.' + restart_msg)
+            if not silent:
+                print('Connection timeout: Likely your phone is not on the same network as your '
+                      'computer or the connection info ' + str(connectinfo) + ' is not correct.' + restart_msg)
             return None
         else:
             print('Unexpected error occurred: ')
@@ -189,7 +191,8 @@ def _connect_tcp(connectinfo):
             print(restart_msg)
             return None
     except (EOFError, KeyboardInterrupt):
-        print('Connect cancelled')
+        if not silent:
+            print('Connect cancelled')
         return None
 
     return sock
@@ -199,7 +202,7 @@ HEADER_LEN = 32
 BUFFSIZE = 4096
 
 
-def _receive_all(sock):
+def receive_all(sock):
     """
     Read all bytes from the given TCP socket.
     :param sock:
@@ -240,16 +243,17 @@ def _receive_all(sock):
 
 
 # Helper for sending requests to the server
+# Silent parameter determines if errors are printed
 # Returns none if couldn't contact the server
-def contact_server(connectinfo, to_send):
+def contact_server(connectinfo, to_send, silent=False):
     # print('sending:\n' + to_send)
     # print("...")
-    sock = _connect_tcp(connectinfo)
+    sock = _connect_tcp(connectinfo, silent)
     # print("Connected!")
     if sock is None:
         return None
     sock.send(bytes(to_send, ENCODING))
-    response = _receive_all(sock)
+    response = receive_all(sock)
     if not response:
         print('Received None response!')
     sock.close()

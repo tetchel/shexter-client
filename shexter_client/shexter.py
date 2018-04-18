@@ -15,7 +15,7 @@ def _get_argparser():
     # description='Send and read texts using your ' + 'Android phone from the command line.'
 
     parser = argparse.ArgumentParser(prog='', usage='command [contact_name] [options]\n'
-                                                    'You can also run "' + shexter.config.APP_NAME +
+                                                    'You can also run "' + shexter.config.APP_NAME.lower() +
                                                     ' help" to see commands and their options.')
     parser.add_argument('command', type=str,
                         help='Possible commands: Send $ContactName, Read $ContactName, Unread, Contacts, ' +

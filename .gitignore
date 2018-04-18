@@ -5,3 +5,5 @@
 /shexter/__pycache__/
 .idea/
 *.pyc
+
+*hexter*.log

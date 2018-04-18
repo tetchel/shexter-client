@@ -10,8 +10,8 @@ from shexter.sock import find_phones, port_str_to_int
 
 ''' This file deals with reading and writing settings. Call configure() to get the ip address.'''
 
-APP_NAME = 'shexter'
-SETTINGS_FILE_NAME = APP_NAME + '.ini'
+APP_NAME = 'Shexter'
+SETTINGS_FILE_NAME = APP_NAME.lower() + '.ini'
 
 """
 Settings file explanation:
@@ -103,7 +103,7 @@ def _get_config_file_path():
     if not config_path:
         sys.exit('Could not get environment variable for config creation.')
 
-    config_path = os.path.join(config_path, APP_NAME)
+    config_path = os.path.join(config_path, APP_NAME.lower())
     if not os.path.exists(config_path):
         try:
             os.makedirs(config_path)
