@@ -1,13 +1,15 @@
 # ShexterD
 
-The Shexter daemon notifies you whenever you get a new text message!
+The Shexter daemon notifies you whenever you get a new text message! It is supported on Windows and Linux.
+
+On Windows, it requires you to `pip install win10toast`. On Linux, it requires you to have `notify-send` installed, which is included on many systems.
 
 ## How to run the daemon persistantly on LINUX using BASH:
 ```
-shexterd & >/dev/null 2>&1         # NOTE: Logging is still done to shexterd.log even if you redirect output.
+$ shexterd & >/dev/null 2>&1         # NOTE: Logging is still done to shexterd.log even if you redirect output.
 
 # Disown the job so you can close the terminal without killing the daemon.
-disown -a         
+$ disown -a         
 
 # How to kill it:
 # Get the PID
@@ -17,7 +19,7 @@ $ ps -ax | grep shexterd.py | grep -v grep
 $ kill 12862
 
 # Or, in one line:
-kill $(ps -ax | grep shexterd.py | grep -v grep | awk "{ print $1 }" )
+$ kill $(ps -ax | grep shexterd.py | grep -v grep | awk "{ print $1 }" )
 ```
 
 ## How to run the daemon on LINUX as a SYSTEMD SERVICE:
@@ -26,10 +28,10 @@ kill $(ps -ax | grep shexterd.py | grep -v grep | awk "{ print $1 }" )
 sudo cp shexterd.service /lib/systemd/system/
 
 # Use --user because shexter will check your $HOME variable
-sudo systemctl --user start shexterd.service
+systemctl --user start shexterd.service
 
 # To have it autostart on boot:
-sudo systemctl --user enable shexterd.service
+systemctl --user enable shexterd.service
 
 ```
 
