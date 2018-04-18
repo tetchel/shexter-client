@@ -60,7 +60,7 @@ def init_notifier_win():
     try:
         import win10toast
         toaster = win10toast.ToastNotifier()
-        toaster.show_toast(shexter.config.APP_NAME, 'Notifications enabled', duration=5, threaded=True)
+        toaster.show_toast(shexter.config.APP_NAME, 'Notifications enabled', duration=1, threaded=True)
         return toaster
     except ImportError as e:
         print(e)
@@ -144,7 +144,11 @@ def main(connectinfo: tuple):
                 logger.debug('No unread')
                 # print('no unread')
 
-            sleep(5)
+            for i in range(5):
+                # Shorter sleep to afford interrupting...
+                # https://stackoverflow.com/questions/5114292/break-interrupt-a-time-sleep-in-python
+                sleep(1)
+
     except (KeyboardInterrupt, EOFError):
         print('Exiting')
         quit(0)
