@@ -166,7 +166,8 @@ def _connect_tcp(connectinfo, silent=False):
     :return: The created TCP socket.
     """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #sock.settimeout(120)
+    # Debug only
+    # sock.settimeout(120)
     sock.settimeout(10)
     try:
         sock.connect(connectinfo)
@@ -256,6 +257,8 @@ def contact_server(connectinfo, to_send, silent=False):
     response = receive_all(sock)
     if not response:
         print('Received None response!')
+    #else:
+    #    print('Got response from server: ' + response)
     sock.close()
 
     return response

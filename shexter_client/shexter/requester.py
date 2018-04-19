@@ -7,6 +7,7 @@ from shexter.config import get_tty_width
 
 # Command constants, must match those in the server code.
 COMMAND_SEND = "send"
+COMMAND_SEND_INIT = "send-init"
 COMMAND_READ = "read"
 COMMAND_GETCONTACTS = "contacts"
 COMMAND_UNRE = "unread"
@@ -51,12 +52,12 @@ def _get_contact_name(args, required):
     return contact_name
 
 
-def _get_message():
+def _get_message(contact_display: str):
     """
     Used for SEND command. Get user to input the message to send.
     :return: The message, or None if the input was cancelled
     """
-    print('Enter message (Press Enter twice to send, CTRL + C to cancel): ')
+    print('Enter message to send to {}\nPress Enter twice to send, CTRL + C to cancel: '.format(contact_display))
     try:
         msg_input = ""
         # TODO allow backspacing of newlines.
@@ -74,20 +75,43 @@ def _get_message():
         return None
 
 
-def _send_command(connectinfo, to_send, arg_send, arg_multi):
+def _send_command(connectinfo, contact_name, arg_send, arg_multi, arg_number):
     """
     Do the send command - Get the message to send, send it, print the phone's response.
     Repeat if necessary (-m flag).
     :param connectinfo: Phone's connection info
-    :param to_send: The request to send (lacking the actual message)
+    :param contact_name: Name of contact to send to, or phone number if -n is specified
     :param arg_send: The message to send if it was specified using -s
     :param arg_multi: If multiple messages are to be sent in one command
     :return: The message to be output to the user.
     """
 
     msg = ''
+    contact_info = ''
     if arg_send is not None:
         msg = arg_send + '\n'
+    else:
+        if arg_number:
+            contact_info = arg_number
+        else:
+            # Do a send_init request to get the info of the contact of interest
+            contact_info = contact_server(connectinfo, COMMAND_SEND_INIT + '\n' + contact_name + '\n\n')
+            if not contact_info:
+                print('Failed to contact phone when preparing to send')
+                return None
+            elif contact_info.startswith('Couldn\'t find contact'):
+                print('No contact was found named "' + contact_name +
+                      '" - use the Contacts command to get a list of valid contacts.')
+                return None
+            elif contact_info.startswith(SETPREF_NEEDED):
+                print('You must set a preferred number for this contact before you can send to him or her.')
+                _handle_setpref_response(connectinfo, contact_info)
+                return None
+
+    if arg_number:
+        to_send = '{}\n{}\n{}\n'.format(COMMAND_SEND, NUMBER_FLAG, contact_name)
+    else:
+        to_send = '{}\n{}\n'.format(COMMAND_SEND, contact_name)
 
     output = ''
     first_send = True
@@ -96,7 +120,7 @@ def _send_command(connectinfo, to_send, arg_send, arg_multi):
         first_send = False
         # get msg if it wasn't given already
         if msg == '':
-            msg = _get_message()
+            msg = _get_message(contact_info)
         # see if user input message
         if msg is None:
             output = 'Send cancelled.'
@@ -206,6 +230,7 @@ def request(connectinfo, args):
     # Contact name/number
     if args.number is not None:
         to_send += NUMBER_FLAG + '\n' + args.number + '\n'
+        contact_name = args.number
     else:
         to_send += contact_name + '\n'
 
@@ -225,7 +250,7 @@ def request(connectinfo, args):
     # Contact the server
     response = ''
     if command == COMMAND_SEND:
-        response = _send_command(connectinfo, to_send, args.send, args.multi)
+        response = _send_command(connectinfo, contact_name, args.send, args.multi, args.number)
     elif command == COMMAND_READ or command == COMMAND_SETPREF_LIST or command == COMMAND_GETCONTACTS:
         response = contact_server(connectinfo, to_send)
     elif command == COMMAND_UNRE:
