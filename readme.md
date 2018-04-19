@@ -22,8 +22,6 @@ Send and read SMS text messages from your Android phone using your \*nix or Wind
 
 **Dependencies:** Python 3. On Windows, the `python` command must resolve to `python3`. On Linux, your default Python does not matter. 
 
-For automatic phone-finding, you need to `pip(3) install netifaces`. This feature does not work on Bash for Windows.
-
 To install, extract the client archive, navigate to the installer for your platform, and run the installer:
 
 **Windows**:   `python .\installer_windows.py` 
@@ -35,14 +33,16 @@ If the install is successful, after restarting your terminal, you should be able
 ### Contacting your Phone
 Your phone and computer must be on the same LAN for the app to work.
 
-By default, the client will try and find your phone automatically by scanning your local network. Make sure the app is open and visible (ie, your screen is on) when the client is searching for your phone.
+By default, the client will try and find your phone automatically by scanning your local network. Make sure the app is open and visible when the client is searching for your phone.
+
+For automatic phone-finding, you need to `pip(3) install netifaces`. This feature does not work on Bash for Windows.
 
 If this fails, you can also configure the location of your phone manually using the IP address and Port presented in the app. Update this info by running `shexter config`.
 
 Note that, for now, Shexter ignores MMS messages altogether. Bear in mind that some normal-looking messages (such as group messages) are MMS.
 
 ### Daemon Mode
-On Windows and Linux, there is a daemon available `shexterd` to display notifications on your computer whenever you get a text.
+On Windows and Linux, there is a daemon available `shexterd` to display native notifications on your computer whenever you get a text.
 
 See [the daemon readme](https://github.com/tetchel/shexter-client/blob/master/daemon-readme.md) for more.
 

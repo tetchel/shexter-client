@@ -1,10 +1,13 @@
 # ShexterD
 
-The Shexter daemon notifies you whenever you get a new text message! It is supported on Windows and Linux.
+The Shexter daemon notifies you whenever you get a new text message! It is supported on Windows and Linux. The daemon will work on MacOS and Bash for Windows, but it will just print to the console (no notifications).
 
 On Windows, it requires you to `pip install win10toast`. On Linux, it requires you to have `notify-send` installed, which is included on many systems.
 
-## How to run the daemon persistantly on LINUX using BASH:
+## How to Use
+Just run `shexterd` after installation.
+
+### How to run the daemon persistantly on LINUX using BASH:
 ```
 $ shexterd & >/dev/null 2>&1         # NOTE: Logging is still done to shexterd.log even if you redirect output.
 
@@ -22,7 +25,7 @@ $ kill 12862
 $ kill $(ps -ax | grep shexterd.py | grep -v grep | awk "{ print $1 }" )
 ```
 
-## How to run the daemon on LINUX as a SYSTEMD SERVICE:
+### How to run the daemon on LINUX as a SYSTEMD SERVICE:
 ```
 # Copy the .service file to your systemd directory
 sudo cp shexterd.service /lib/systemd/system/
@@ -35,7 +38,7 @@ systemctl --user enable shexterd.service
 
 ```
 
-## How to run the daemon persistantly on WINDOWS using Powershell:
+### How to run the daemon persistantly on WINDOWS using Powershell:
 
 ```
 PS C:\Users\you\AppData\Local\shexter\> Start-Process shexterd -WindowStyle hidden
@@ -53,7 +56,7 @@ Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 PS E:\...\shexter_client> stop-process 240796
 ```
 
-## How to run the daemon on startup on WINDOWS
+### How to run the daemon on startup on WINDOWS
 After running the installer, go to the directory shexter was installed to, eg. `C:\Users\you\AppData\Local\shexter` and right-click `shexterd.bat`, then select `Create Shortcut`.
 
 Then copy the `shexterd` link to `C:\Users\you\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup` to install for your user.
