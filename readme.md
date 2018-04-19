@@ -2,6 +2,12 @@
 
 Send and read SMS text messages from your Android phone using your \*nix or Windows command line. 
 
+[Get command-line client here](https://github.com/tetchel/shexter-client/raw/master/shexter_client.zip)
+
+[Get the app here](https://github.com/tetchel/shexter-client/raw/master/shexter.apk)
+
+[Read a demo here](https://github.com/tetchel/shexter-client/blob/master/demo.md)
+
 ## Features
 - Sets up in seconds with installation scripts
 - Get desktop notifications when you receive a message
@@ -9,15 +15,8 @@ Send and read SMS text messages from your Android phone using your \*nix or Wind
 - View your contacts
 - Read any of your text conversations in your terminal
 - Ring your phone so you can find it, regardless of your volume setting
-- Can easily be called from a cmdlet or script
-
-- Fully supported on Windows and Linux. Some features are not supported on MacOS.
-
-[Get command-line client here](https://github.com/tetchel/shexter-client/raw/master/shexter_client.zip)
-
-[Get the app here](https://github.com/tetchel/shexter-client/raw/master/shexter.apk)
-
-[Read a demo here](https://github.com/tetchel/shexter-client/blob/master/demo.md)
+- Can easily be called from a script
+- Fully supported on Windows and Linux, some features are not supported on MacOS
 
 ## Client Setup
 
