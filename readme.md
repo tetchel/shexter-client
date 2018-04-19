@@ -44,7 +44,7 @@ Note that, for now, Shexter ignores MMS messages altogether. Bear in mind that s
 ### Daemon Mode
 On Windows and Linux, there is a daemon available `shexterd` to display notifications on your computer whenever you get a text.
 
-See [the daemon readme](https://github.com/tetchel/shexter-client/blob/master/shexter_client/daemon-readme.md) for more.
+See [the daemon readme](https://github.com/tetchel/shexter-client/blob/master/daemon-readme.md) for more.
 
 ## App Setup
 
