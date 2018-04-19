@@ -13,6 +13,8 @@ COMMAND_UNRE = "unread"
 # If the user is sending to/reading from a number rather than a contact name
 NUMBER_FLAG = "-number"
 
+COMMAND_RING = "ring"
+
 SETPREF_NEEDED = "NEED-SETPREF"
 COMMAND_SETPREF = "setpref"
 COMMAND_SETPREF_LIST = COMMAND_SETPREF + "-list"
@@ -155,6 +157,12 @@ def unread_command(connectinfo, silent=False):
     #    return ''
 
 
+def _ring_command(connectinfo):
+    to_send = COMMAND_RING + '\n\n'
+    response = contact_server(connectinfo, to_send)
+    return response
+
+
 def _is_contact_needed(command):
     return command == COMMAND_SEND or command == COMMAND_READ or command == COMMAND_SETPREF_LIST
 
@@ -222,6 +230,8 @@ def request(connectinfo, args):
         response = contact_server(connectinfo, to_send)
     elif command == COMMAND_UNRE:
         response = unread_command(connectinfo)
+    elif command == COMMAND_RING:
+        response = _ring_command(connectinfo)
     else:
         print('Command \"{}\" not recognized.'.format(command))
 

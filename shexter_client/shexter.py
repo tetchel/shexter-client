@@ -18,7 +18,7 @@ def _get_argparser():
                                                     'You can also run "' + shexter.config.APP_NAME.lower() +
                                                     ' help" to see commands and their options.')
     parser.add_argument('command', type=str,
-                        help='Possible commands: Send $ContactName, Read $ContactName, Unread, Contacts, ' +
+                        help='Possible commands: Send $ContactName, Read $ContactName, Unread, Contacts, Ring, ' +
                              'SetPref $ContactName, Config. Not case sensitive.')
     parser.add_argument('contact_name', type=str, nargs='*',
                         help='Specify contact for SEND and READ commands.')
@@ -29,10 +29,9 @@ def _get_argparser():
                         help='Keep entering new messages to SEND until cancel signal is given. ' +
                              'Useful for sending multiple texts in succession.')
     parser.add_argument('-s', '--send', default=None, type=str,
-                        help='Allows sending messages as a one-liner. Put your message after the flag. ' +
-                             'Must be in quotes')
+                        help='Allows sending messages as a one-liner. Put your message in quotes after the flag. ')
     parser.add_argument('-n', '--number', default=None, type=str,
-                        help='Specify a phone number instead of a contact name for applicable commands.')
+                        help='Specify a phone number instead of a contact name for send, read, and unread commands.')
 
     return parser
 

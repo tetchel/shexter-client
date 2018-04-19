@@ -3,12 +3,13 @@
 Send and read SMS text messages from your Android phone using your \*nix or Windows command line. 
 
 ## Features
-- Sets up in seconds
+- Sets up in seconds with installation scripts
 - Get desktop notifications when you receive a message
 - Send messages to one of your contacts or to an arbitrary phone number
 - View your contacts
 - Read any of your text conversations in your terminal
-- Can easily be called from a command or script
+- Ring your phone so you can find it, regardless of your volume setting
+- Can easily be called from a cmdlet or script
 
 - Fully supported on Windows and Linux. Some features are not supported on MacOS.
 
