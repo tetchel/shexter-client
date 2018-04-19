@@ -52,3 +52,10 @@ Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 # Then stop that PID.
 PS E:\...\shexter_client> stop-process 240796
 ```
+
+## How to run the daemon on startup on WINDOWS
+After running the installer, go to the directory shexter was installed to, eg. `C:\Users\you\AppData\Local\shexter` and right-click `shexterd.bat`, then select `Create Shortcut`.
+
+Then copy the `shexterd` link to `C:\Users\you\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup` to install for your user.
+
+After logging out and back in, shexter should start automatically. You do not need to repeat this process after upgrading shexter.

@@ -27,12 +27,14 @@ BAT_NAME = APP_NAME + '.bat'
 DAEMON_BAT_NAME = APP_NAME + 'd.bat'
 CLIENT_NAME = APP_NAME + '.py'
 DAEMON_NAME = APP_NAME + 'd.py'
+#DAEMON_INVIS = APP_NAME + 'd-invis.vbs'
 # PERSIST_NAME = APP_NAME() + '_persistant.py'
 # DEPENDENCIES = [ 'appdirs.py' ]		# Add new dependencies to the list and the lib directory
 
 # add lib_dir to each dependency so installer can find
 # DEPENDENCIES = [ LIB_DIR + s for s in DEPENDENCIES ]
 
+"""
 print('WARNING: This script does edit your registry, so run only if you trust me ' +
       'or understand what this script does!')
 
@@ -42,6 +44,7 @@ response = input().lower()
 if response != 'y':
     print('Sorry to hear that!')
     quit()
+"""
 
 # make the dir if necessary
 if not os.path.exists(install_dir):
@@ -75,6 +78,7 @@ shutil.copy(CLIENT_DIR + DAEMON_NAME, install_dir)
 # use path[0] because .bat is in the same folder as this script
 shutil.copy(os.path.join(sys.path[0], BAT_NAME), install_dir)
 shutil.copy(os.path.join(sys.path[0], DAEMON_BAT_NAME), install_dir)
+#shutil.copy(os.path.join(sys.path[0], DAEMON_INVIS), install_dir)
 # copy the 'shexter' python module (folder)
 shutil.copytree(os.path.join(CLIENT_DIR, APP_NAME), os.path.join(install_dir, APP_NAME))
 # for dep in DEPENDENCIES:

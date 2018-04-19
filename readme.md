@@ -12,7 +12,7 @@ Send and read SMS text messages from your Android phone using your \*nix or Wind
 - Sets up in seconds with installation scripts
 - Get desktop notifications when you receive a message
 - Send messages to one of your contacts or to an arbitrary phone number
-- View your contacts
+- View your   contacts
 - Read any of your text conversations in your terminal
 - Ring your phone so you can find it, regardless of your volume setting
 - Can easily be called from a script
@@ -20,7 +20,9 @@ Send and read SMS text messages from your Android phone using your \*nix or Wind
 
 ## Client Setup
 
-**Dependencies:** Python 3. For automatic phone-finding, you need to `pip install netifaces`.
+**Dependencies:** Python 3. On Windows, the `python` command must resolve to `python3`. On Linux, your default Python does not matter. 
+
+For automatic phone-finding, you need to `pip(3) install netifaces`. This feature does not work on Bash for Windows.
 
 To install, extract the client archive, navigate to the installer for your platform, and run the installer:
 

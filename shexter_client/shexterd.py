@@ -29,7 +29,7 @@ def _parse_contact_name(line: str):
     # The contact name is the first word after the first ']'
     try:
         return line.split(']')[1].strip().split()[0].rstrip(':')
-    except Error as e:
+    except Exception as e:
         print(e)
         print('Error parsing contact name from "{}"'.format(line))
 
