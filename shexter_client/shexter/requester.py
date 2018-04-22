@@ -99,6 +99,10 @@ def _send_command(connectinfo, contact_name, arg_send, arg_multi, arg_number):
             if not contact_info:
                 print('Failed to contact phone when preparing to send')
                 return None
+            elif 'rejected your request' in contact_info.lower():
+                print('Found your phone, but it did not recognize this computer. '
+                      'Open the notification on your phone to give approval')
+                return None
             elif contact_info.startswith('Couldn\'t find contact'):
                 print('No contact was found named "' + contact_name +
                       '" - use the Contacts command to get a list of valid contacts.')
