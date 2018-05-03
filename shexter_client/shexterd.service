@@ -1,0 +1,10 @@
+[Unit]
+Description=Shexter Notification Daemon
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/env python3 /opt/shexter/shexterd.py >/opt/shexter/shexterd-systemd.log
+
+[Install]
+WantedBy=multi-user.target

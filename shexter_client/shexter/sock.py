@@ -1,11 +1,8 @@
 import errno
 import socket
-from subprocess import Popen, PIPE
 from select import select
 from sys import stdout
-from ipaddress import IPv4Network
 
-from shexter.platform import get_platform, Platform
 
 ''' This file performs network operations. '''
 
@@ -25,83 +22,46 @@ def port_str_to_int(port):
     """
     try:
         port = int(port)
-        if port < 1024 or port > 49151:
+        if port is None or port < 1024 or port > 49151:
             raise ValueError
         return port
     except ValueError:
-        print(str(port) + ' is not a valid port. Must be an integer between 1025 and 49150.')
+        print('"' + str(port) + '" is not a valid port. Must be an integer between 1025 and 49150.')
         return None
 
 
 def _get_broadcast_addrs():
     """
-    My least favourite function - Calls ipconfig (windows) or ifconfig (nix)
-    and parses the output to get the broadcast address for each available interface.
-    Alternatively, use netifaces, but it does not seem to work reliably, so for now we are using external programs.
-    :return: List of broadcast addresses the host can use.
+    :return: List of broadcast addresses the host can use. We will broadcast to each of these.
     """
 
-    if get_platform() == Platform.WIN:
+    try:
+        # This library is only used by this one function, which the user can choose to not use.
+        import netifaces
+    except ImportError:
+        print('***** You must install netifaces to use the phone finder: "pip3 install netifaces"')
+        return []
+
+    broadcast_addresses = []
+
+    for iface in netifaces.interfaces():
+        #print('iface ' + iface)
+        addrs = netifaces.ifaddresses(iface)
+
+        inet_ifaces = []
         try:
-            with Popen('ipconfig', stdout=PIPE) as subproc:
-                output, errors = subproc.communicate()
-
-            if errors:
-                print('Something went wrong running ipconfig:\n' + errors.decode('utf8'))
-        except FileNotFoundError:
-            print('***** ipconfig is not installed! Install ipconfig. *****')
-            return []
-
-        # List to hold IP, Mask pairings (will have to calculate broadcast address later)
-        output = output.decode('utf8')
-        lines = output.splitlines()
-        broadcast_addresses = []
-        for index, line in enumerate(lines):
-            # Parse out the IPv4 address
-            if 'IPv4' in line:
-                inet_addr = line.split(': ', 1)[1]
-                # Netmask is the line after the address
-                mask = lines[index+1].split(': ', 1)[1]
-
-                # print(inet_addr + ' ' + mask)
-                # Convert the address and mask combination to broadcast address
-                network = IPv4Network((inet_addr, mask), False)
-                broadcast_addresses.append(str(network.broadcast_address))
-    else:
-        try:
-            with Popen('ifconfig', stdout=PIPE) as subproc:
-                output, errors = subproc.communicate()
-
-            if errors:
-                print('Something went wrong running ifconfig:\n' + errors.decode('utf8'))
-        except FileNotFoundError:
+            inet_ifaces = addrs[netifaces.AF_INET]
+        except KeyError:
+            pass
+        for i in inet_ifaces:
+            bcast = None
             try:
-                # Some Linux distros (arch) have moved from ifconfig to 'ip address'
-                with Popen(['ip', 'address'], stdout=PIPE) as subproc:
-                    output, errors = subproc.communicate()
-            except FileNotFoundError:
-                print('Could not find "ifconfig" or "ip" command. ' +
-                      'Install one of these programs to find your phone automatically')
-                return []
+                bcast = i['broadcast']
+            except KeyError:
+                pass
 
-        output = output.decode('utf8')
-        broadcast_addresses = []
-        for line in output.splitlines():
-            bcast = ''
-            if 'Bcast' in line:
-                bcast = line.split('Bcast:', 1)[1]
-            # Alternative output format (probably there are others, great)
-            elif 'broadcast' in line:
-                bcast = line.split('broadcast ', 1)[1]
-            elif 'brd' in line:
-                bcast = line.split('brd ', 1)[1]
-                # Reject IPv6 addresses
-                if ':' in bcast:
-                    bcast = None
-
-            if bcast:
-                # now contains everything after Bcast. Truncate at the first space to get the bcast address.
-                bcast = bcast.split(' ', 1)[0]
+            if bcast is not None and bcast != '127.255.255.255':    # Sometimes it picks up lo
+                #print('broadcast address: ' + bcast)
                 broadcast_addresses.append(bcast)
 
     print('Broadcast addresses: ' + str(broadcast_addresses))
@@ -122,19 +82,24 @@ def find_phones():
 
     broadcast_addrs = _get_broadcast_addrs()
     if not broadcast_addrs:
-        print('There was a problem getting your broadcast address. You will have to configure manually.')
+        print('There was a problem running the phone finder. You will have to configure manually.')
         return None
 
-    print('Searching for phones, can take a few seconds...')
+    print('Ready to search for phones.')
+    manual = input('Press Enter when the app is open on your phone, or type "m" to skip to manual configuration.\n')
+    manual = manual.lower()
+    if manual.lower() == 'm':
+        return None
 
     for port in range(PORT_MIN, PORT_MAX+1):
         count = 0
 
         # Search more on the earlier ports which are much more likely to be the right one
-        if port == PORT_MIN:
-            tries = 4
-        else:
-            tries = 2
+        #if port == PORT_MIN:
+        #    tries = 4
+        #else:
+        #    tries = 2
+        tries = 2
 
         print('Searching on port ' + str(port), end="")
         while not phone and count < tries:
@@ -144,12 +109,17 @@ def find_phones():
 
             # Send on ALL the interfaces (required by Windows!)
             for broadcast_addr in broadcast_addrs:
+                #print('\nbroadcasting on ' + broadcast_addr + ' to ' + str(port))
                 discover_bytes = bytes(DISCOVER_REQUEST, ENCODING)
                 sock_sender.sendto(discover_bytes, (broadcast_addr, port))
 
                 sock_recvr = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 sock_recvr.bind(('', port))
-                ready = select([sock_recvr], [], [sock_sender, sock_recvr], 0.5)
+
+                # Wait for phone to respond
+                # I don't know what an appropriate timeout for this would be - shorter is better but how short
+                # is too short?
+                ready = select([sock_recvr], [], [sock_sender, sock_recvr], 0.25)
                 if ready[0]:
                     # Buffsize must match ConnectionInitThread.BUFFSIZE
                     data, other_host = sock_recvr.recvfrom(256)
@@ -190,13 +160,14 @@ def find_phones():
     return None
 
 
-def _connect_tcp(connectinfo):
+def _connect_tcp(connectinfo, silent=False):
     """
     Connect to the phone using the given IP, port pairing
     :return: The created TCP socket.
     """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #sock.settimeout(120)
+    # Debug only
+    # sock.settimeout(120)
     sock.settimeout(10)
     try:
         sock.connect(connectinfo)
@@ -206,12 +177,14 @@ def _connect_tcp(connectinfo):
                        'Also ensure your phone and computer are connected to the same network.')
         errorcode = e.errno
         if errorcode == errno.ECONNREFUSED:
-            print('Connection refused: Likely Shexter is not running on your phone.'
-                  + restart_msg)
+            if not silent:
+                print('Connection refused: Likely Shexter is not running on your phone.'
+                      + restart_msg)
             return None
         elif errorcode == errno.ETIMEDOUT or 'time' in str(e):
-            print('Connection timeout: Likely your phone is not on the same network as your '
-                  'computer or the connection info ' + str(connectinfo) + ' is not correct.' + restart_msg)
+            if not silent:
+                print('Connection timeout: Likely your phone is not on the same network as your '
+                      'computer or the connection info ' + str(connectinfo) + ' is not correct.' + restart_msg)
             return None
         else:
             print('Unexpected error occurred: ')
@@ -219,7 +192,8 @@ def _connect_tcp(connectinfo):
             print(restart_msg)
             return None
     except (EOFError, KeyboardInterrupt):
-        print('Connect cancelled')
+        if not silent:
+            print('Connect cancelled')
         return None
 
     return sock
@@ -229,7 +203,7 @@ HEADER_LEN = 32
 BUFFSIZE = 4096
 
 
-def _receive_all(sock):
+def receive_all(sock):
     """
     Read all bytes from the given TCP socket.
     :param sock:
@@ -270,15 +244,21 @@ def _receive_all(sock):
 
 
 # Helper for sending requests to the server
-def contact_server(connectinfo, to_send):
+# Silent parameter determines if errors are printed
+# Returns none if couldn't contact the server
+def contact_server(connectinfo, to_send, silent=False):
     # print('sending:\n' + to_send)
     # print("...")
-    sock = _connect_tcp(connectinfo)
+    sock = _connect_tcp(connectinfo, silent)
     # print("Connected!")
     if sock is None:
         return None
     sock.send(bytes(to_send, ENCODING))
-    response = _receive_all(sock)
+    response = receive_all(sock)
+    if not response:
+        print('Received None response!')
+    #else:
+    #    print('Got response from server: ' + response)
     sock.close()
 
     return response
