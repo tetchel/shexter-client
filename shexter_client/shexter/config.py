@@ -41,8 +41,9 @@ def _get_ip():
         # apparently any IP will work
         sock.connect(('192.168.1.1', 1))
         ip = sock.getsockname()[0]
-    except Exception:
-        print('Error: Couldn\'t get IP!')
+    except Exception as e:
+        print(e)
+        print('Error: Couldn\'t get IP! Make sure you are connected to a network.')
     finally:
         sock.close()
 
